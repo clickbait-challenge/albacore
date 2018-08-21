@@ -1,0 +1,1 @@
+statesize,EmbeddingSize,dropout_embedding,dropout_W,dropout_U,mse, accuracy, precision, recall, f1 
