@@ -25,7 +25,7 @@ import json
 import pickle
 from collections import Counter
 np.random.seed(42)
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 from gensim.models import Word2Vec
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Embedding, Bidirectional

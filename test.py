@@ -11,16 +11,18 @@ from __future__ import print_function
 from sklearn.model_selection import KFold
 import numpy as np
 import os
+import sys
 from sklearn import metrics
 import json
 import pickle
 from collections import Counter
 np.random.seed(42)
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 from gensim.models import Word2Vec
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Embedding, Bidirectional
 from keras.layers import LSTM, SimpleRNN, GRU,Flatten,RepeatVector,Permute,Conv1D,GlobalMaxPooling1D
+import keras.utils
 import keras.callbacks
 import re
 import nltk
@@ -250,14 +252,14 @@ with open('word2id.json', 'r') as fin:
 output_add = os.path.join(output_folder,'results.jsonl')
 
 
-tetids, tepost_texts, tetruth_classes, tepost_text_lens, tetruth_means, tetarget_descriptions, tetarget_description_lens, teimage_features = WordEmbeddingLoader(word2id=word2id, fps=[input_folder], y_len=0, use_target_description=False, use_image=False)    
+tetids, tepost_texts, tetruth_classes, tepost_text_lens, tetruth_means, tetarget_descriptions, tetarget_description_lens, teimage_features = data_reader(word2id=word2id, fps=[input_folder], y_len=0, use_target_description=False, use_image=False)
 tepost_texts = np.array(tepost_texts)
 tetruth_classes = np.array(tetruth_classes)
 tepost_text_lens = [each_len if each_len <= max_post_text_len else max_post_text_len for each_len in tepost_text_lens]
 tepost_text_lens = np.array(tepost_text_lens)
 tetruth_means = np.array(tetruth_means)
 tetruth_means = np.ravel(tetruth_means).astype(np.float32)
-tepost_texts = utils.pad_sequences(tepost_texts, max_post_text_len)
+tepost_texts = keras.preprocessing.sequence.pad_sequences(tepost_texts, max_post_text_len)
 
 EmbeddingSize = 100
 max_features = len(word2id.keys())
@@ -276,14 +278,14 @@ model.add(Embedding(input_dim = max_features,
                     ,trainable = True))
 model.add(Dropout(dropout_embedding))
 
-model.add(Bidirectional(GRU(128, dropout_W=0.2, dropout_U=0.5)))  # try using a GRU instead, for fun
+model.add(Bidirectional(GRU(512, dropout_W=0.2, dropout_U=0.5)))  # try using a GRU instead, for fun
 model.add(Dense(1))
 model.add(Activation('sigmoid'))
 
 model.compile(loss='mse',
               optimizer='rmsprop')
 
-model.load_weights('/home/albacore/omidvar/Tira/weights.hdf5')
+model.load_weights('weights_albacore.hdf5')
 
 petruth_means = model.predict(X_test)
 tetruthClass = []
@@ -293,14 +295,5 @@ petruthClass = []
 with open(output_add,'w') as fout:
     for i in range(len(tetids)):
         fout.write(json.dumps({"id": tetids[i], "clickbaitScore": float(petruth_means[i])})+'\n')
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
