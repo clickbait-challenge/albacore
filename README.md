@@ -1,3 +1,6 @@
+The model is described in the following paper:
+https://arxiv.org/abs/1806.07713
+
 # albacore
 The Albacore Clickbait Detector
 
