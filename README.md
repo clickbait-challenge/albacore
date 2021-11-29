@@ -1,5 +1,12 @@
 The model is described in the following paper:
-https://arxiv.org/abs/1806.07713
+
+Using Neural Network for Identifying Clickbaits in Online News Media
+
+https://arxiv.org/abs/1806.07713 or https://link.springer.com/chapter/10.1007/978-3-030-11680-4_22
+
+
+
+
 
 # albacore
 The Albacore Clickbait Detector
